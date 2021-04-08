@@ -7,4 +7,5 @@
     <string name="error">Error</string>
     <string name="empty_title">Title cannot be empty</string>
     <string name="ok">ok</string>
+    <string name="alarm_text">Ring.....ring....</string>
 </resources>

@@ -1,5 +1,7 @@
 package com.example.alarmmanager.schedule
 
+import android.app.AlarmManager
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -35,7 +37,10 @@ class AlarmSchedulerFragment : Fragment() {
 
     private fun observe(alarmState: AlarmScheduleState) {
         when(alarmState){
-            is AlarmScheduleState.AlarmScheduleSuccessful -> navigateToAllAlarms()
+            is AlarmScheduleState.AlarmScheduleSuccessful -> {
+                scheduleAlarm()
+                navigateToAllAlarms()
+            }
             is AlarmScheduleState.ScheduleAlarm -> {
                 clearState()
                 val hours = TimeUtil.getTimePickerHour(binding.timePicker)
@@ -56,6 +61,11 @@ class AlarmSchedulerFragment : Fragment() {
             }
             else -> {}
         }
+    }
+
+    private fun scheduleAlarm() {
+        val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
     }
 
     private fun navigateToAllAlarms() {
