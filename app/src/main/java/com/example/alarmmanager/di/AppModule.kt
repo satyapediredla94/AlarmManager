@@ -14,6 +14,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+
 @Module
 @InstallIn(value = [SingletonComponent::class])
 object AppModule {
@@ -21,24 +22,24 @@ object AppModule {
     @Provides
     @Singleton
     fun getDatabase(
-        @ApplicationContext context: Context
+            @ApplicationContext context: Context
     ) = Room.databaseBuilder(
-        context,
-        MainDatabase::class.java,
-        AppConstants.DB_NAME
+            context,
+            MainDatabase::class.java,
+            AppConstants.DB_NAME
     ).build()
 
     @Provides
     @Singleton
     fun getDao(
-        @ApplicationContext context: Context,
-        database: MainDatabase
+            @ApplicationContext context: Context,
+            database: MainDatabase
     ) = database.dao()
 
     @Provides
     @Singleton
     fun getMainRepo(
-        alarmDbDao: AlarmDbDao
+            alarmDbDao: AlarmDbDao
     ) = MainRepository(alarmDbDao) as AlarmRepository
 
 }

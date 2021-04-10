@@ -14,14 +14,17 @@ import androidx.core.app.NotificationCompat
 import com.example.alarmmanager.R
 import com.example.alarmmanager.alarm.NotificationActivity
 import com.example.alarmmanager.utils.AppConstants
+import com.example.alarmmanager.utils.Utils
 
 class AlarmService : Service() {
 
     private lateinit var mediaPlayer: MediaPlayer
     private lateinit var vibrator: Vibrator
+    private val TAG = "AlarmService"
 
     override fun onCreate() {
         super.onCreate()
+        Utils.logger(TAG, "Scheduling Alarm in Service")
         val alarmTone = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
         mediaPlayer = MediaPlayer.create(this, alarmTone)
         mediaPlayer.isLooping = true
@@ -29,6 +32,7 @@ class AlarmService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Utils.logger(TAG, "Inside on Start Command")
         val notifIntent = Intent(this, NotificationActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(this, 0, notifIntent, flags)
         val alarmTitle = String.format("%s Alarm", intent!!.getStringExtra(AppConstants.ALARM_TITLE))

@@ -32,6 +32,7 @@ open class AlarmSchedulerViewModel @Inject constructor(
         val title = alarmTitle.value
         Utils.logger("Alarm View Model", "Hours: $hours & Minutes: $minutes")
         Utils.logger("Alarm View Model", "Title : $title")
+        _alarmState.value = AlarmScheduleState.AlarmScheduleSuccessful
 //        viewModelScope.launch {
 //            val alarm = Alarm(
 //                title = title!!,
