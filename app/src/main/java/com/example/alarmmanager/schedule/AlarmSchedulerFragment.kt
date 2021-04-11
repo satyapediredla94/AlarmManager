@@ -76,12 +76,10 @@ class AlarmSchedulerFragment : Fragment() {
     private fun scheduleAlarm(title: String) {
         Utils.logger(TAG, "In")
         val alarmMgr = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val alarmId = AppConstants.ALARM_ID_INT
         val alarmIntent = Intent(requireContext(), AlarmReceiver::class.java).let { intent ->
             Utils.logger(TAG, "Schedule an Alarm inside intent with title : $title")
-//            intent.putExtra(AppConstants.ALARM_TITLE, title)
-            intent.putExtra(AppConstants.ALARM_ID, alarmId)
-            PendingIntent.getBroadcast(requireContext(), alarmId, intent, PendingIntent.FLAG_ONE_SHOT)
+            intent.putExtra(AppConstants.ALARM_TITLE, title)
+            PendingIntent.getBroadcast(requireContext(), 0, intent, 0)
         }
 
         val calendar = Calendar.getInstance().apply {
