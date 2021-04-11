@@ -8,4 +8,5 @@
     <string name="empty_title">Title cannot be empty</string>
     <string name="ok">ok</string>
     <string name="alarm_text">Ring.....ring....</string>
+    <string name="dismiss">Dismiss</string>
 </resources>

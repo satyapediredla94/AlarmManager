@@ -1,5 +1,7 @@
 package com.example.alarmmanager.alarmutils
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
@@ -14,6 +16,7 @@ import androidx.core.app.NotificationCompat
 import com.example.alarmmanager.R
 import com.example.alarmmanager.alarm.NotificationActivity
 import com.example.alarmmanager.utils.AppConstants
+import com.example.alarmmanager.utils.AppConstants.CHANNEL_ID
 import com.example.alarmmanager.utils.Utils
 
 class AlarmService : Service() {
@@ -31,17 +34,37 @@ class AlarmService : Service() {
         vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         Utils.logger(TAG, "Inside on Start Command")
-        val notifIntent = Intent(this, NotificationActivity::class.java)
-        val pendingIntent = PendingIntent.getActivity(this, 0, notifIntent, flags)
-        val alarmTitle = String.format("%s Alarm", intent!!.getStringExtra(AppConstants.ALARM_TITLE))
-        val channelId = AppConstants.CHANNEL_ID
+        val alertIntent = Intent(this, NotificationActivity::class.java)
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, alertIntent, 0)
+        val alarmTitle = String.format("%s Alarm", intent.getStringExtra(AppConstants.ALARM_TITLE))
+        val channelId = CHANNEL_ID
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = AppConstants.CHANNEL_NAME
+            val descriptionText = AppConstants.CHANNEL_DESCRIPTION
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(channelId, name, importance).apply {
+                description = descriptionText
+            }
+            // Register the channel with the system
+            val notificationManager: NotificationManager =
+                    getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        var action: NotificationCompat.Action =
+                NotificationCompat.Action.Builder(0,
+                        getString(R.string.dismiss), pendingIntent)
+                        .build()
+
         val notification = NotificationCompat.Builder(this, channelId).apply {
             setContentTitle(alarmTitle)
             setContentText(getString(R.string.alarm_text))
             setSmallIcon(R.drawable.alarm_icon)
             setContentIntent(pendingIntent)
+            setAutoCancel(true)
         }.build()
 
         mediaPlayer.start()
@@ -56,7 +79,7 @@ class AlarmService : Service() {
 
         startForeground(1, notification)
 
-        return START_STICKY
+        return START_NOT_STICKY
     }
 
     override fun onDestroy() {

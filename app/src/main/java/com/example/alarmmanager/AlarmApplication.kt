@@ -15,7 +15,7 @@ class AlarmApplication : Application() {
         createNotificationChannnel()
     }
 
-    fun createNotificationChannnel() {
+    private fun createNotificationChannnel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val serviceChannel = NotificationChannel(
                     AppConstants.CHANNEL_ID,

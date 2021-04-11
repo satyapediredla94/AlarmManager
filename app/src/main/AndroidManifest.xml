@@ -22,6 +22,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".alarm.NotificationActivity"/>
+
         <receiver android:name=".alarmutils.AlarmReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
