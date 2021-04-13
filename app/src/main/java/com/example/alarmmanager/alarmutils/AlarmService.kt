@@ -37,7 +37,8 @@ class AlarmService : Service() {
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         Utils.logger(TAG, "Inside on Start Command")
         val alertIntent = Intent(this, NotificationActivity::class.java)
-        val pendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, alertIntent, 0)
+        val alarmId = intent.getIntExtra(AppConstants.ALARM_ID, 0)
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(this, alarmId, alertIntent, 0)
         val alarmTitle = String.format("%s Alarm", intent.getStringExtra(AppConstants.ALARM_TITLE))
         val channelId = CHANNEL_ID
 

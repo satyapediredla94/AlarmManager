@@ -10,19 +10,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.example.alarmmanager.R
 import com.example.alarmmanager.alarmutils.AlarmReceiver
+import com.example.alarmmanager.data.Alarm
 import com.example.alarmmanager.databinding.FragmentAlarmSchedulerBinding
 import com.example.alarmmanager.utils.AppConstants
 import com.example.alarmmanager.utils.TimeUtil
 import com.example.alarmmanager.utils.Utils
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
-
+@AndroidEntryPoint
 class AlarmSchedulerFragment : Fragment() {
 
-    private lateinit var alarmSchedulerViewModel: AlarmSchedulerViewModel
+    private val alarmSchedulerViewModel: AlarmSchedulerViewModel by viewModels()
     private lateinit var binding: FragmentAlarmSchedulerBinding
     private val TAG = "AlarmSchedulerFragment"
     private var title = ""
@@ -39,7 +42,6 @@ class AlarmSchedulerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        alarmSchedulerViewModel = ViewModelProvider(requireActivity()).get(AlarmSchedulerViewModel::class.java)
         binding.viewmodel = alarmSchedulerViewModel
         alarmSchedulerViewModel.alarmState.observe(requireActivity(), { observe(it) })
     }
@@ -47,7 +49,7 @@ class AlarmSchedulerFragment : Fragment() {
     private fun observe(alarmState: AlarmScheduleState) {
         when(alarmState){
             is AlarmScheduleState.AlarmScheduleSuccessful -> {
-                scheduleAlarm(title)
+                scheduleAlarm(alarmState.alarm)
                 navigateToAllAlarms()
             }
             is AlarmScheduleState.ScheduleAlarm -> {
@@ -73,13 +75,14 @@ class AlarmSchedulerFragment : Fragment() {
         }
     }
 
-    private fun scheduleAlarm(title: String) {
+    private fun scheduleAlarm(alarm: Alarm) {
         Utils.logger(TAG, "In")
         val alarmMgr = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val alarmIntent = Intent(requireContext(), AlarmReceiver::class.java).let { intent ->
             Utils.logger(TAG, "Schedule an Alarm inside intent with title : $title")
-            intent.putExtra(AppConstants.ALARM_TITLE, title)
-            PendingIntent.getBroadcast(requireContext(), 0, intent, 0)
+            intent.putExtra(AppConstants.ALARM_TITLE, alarm.title)
+            intent.putExtra(AppConstants.ALARM_ID, alarm.id!!)
+            PendingIntent.getBroadcast(requireContext(), alarm.id!!, intent, 0)
         }
 
         val calendar = Calendar.getInstance().apply {
@@ -99,7 +102,7 @@ class AlarmSchedulerFragment : Fragment() {
     }
 
     private fun navigateToAllAlarms() {
-        return
+        findNavController().navigate(R.id.alarmsFragment)
     }
 
     private fun clearState() {

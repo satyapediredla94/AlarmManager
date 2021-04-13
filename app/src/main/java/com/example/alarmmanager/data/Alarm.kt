@@ -9,6 +9,7 @@ data class Alarm(
     val hour: Int,
     val minute: Int,
     val started: Boolean = false,
+    val isEnabled: Boolean = false,
     @PrimaryKey(autoGenerate = true)
     var id : Int? = null
 )

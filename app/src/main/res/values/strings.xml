@@ -9,4 +9,5 @@
     <string name="ok">ok</string>
     <string name="alarm_text">Ring.....ring....</string>
     <string name="dismiss">Dismiss</string>
+    <string name="time">10:10 AM</string>
 </resources>
